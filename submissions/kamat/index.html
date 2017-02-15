@@ -1,0 +1,229 @@
+<html>
+
+    <head>
+        <title>Project 0</title>
+        <style type="text/css" href="project0.css"></style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <!--Put your D3 import statement between these two lines-->
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <!--Put your D3 import statement between these two lines-->
+    </head>
+
+    <body>
+        <div id="partOne">
+            <h1>Part One: </h1>
+        </div>
+        <div id="partTwo">
+            <h1>Part Two: </h1>
+            <div id="barchart">
+            </div>
+        </div>
+        <div id="partThree">
+            <h1>Part Three &amp; Four: </h1>
+            <div id="scatterplot">
+                <p id="scatterLabel"></p>
+            </div>
+        </div>
+        <div id="partFive">
+            <h1>Part Five: </h1>
+            <div id="scatterplotSet">
+            </div>
+        </div>
+        <script type="text/javascript">
+        // Put your part one code here ***********************
+        var filesList = ["./data/anscombe_I.csv", "./data/anscombe_II.csv", "./data/anscombe_III.csv", "./data/anscombe_IV.csv"];
+
+        filesList.forEach(function(f) {
+            d3.csv(f, function(data) {
+                checkDataset(data);
+            });
+        });
+
+        // Leave this to test your data uploading. All data uploading should be above this line
+        function checkDataset(dataset) {
+            if (dataset.length == 11)
+                $("#partOne").append("<p>data loaded correctly</p>");
+            else
+                $("#partOne").append("<p>data loaded incorrectly. Try using the debugger to help you find the bug!</p>");
+        }
+
+        var margin = {
+            top: 20,
+            right: 20,
+            bottom: 30,
+            left: 40
+        };
+
+        var width = 600;
+        var height = 300;
+
+        // Put your part two code here ***********************
+
+        d3.csv("data/anscombe_II.csv", function(data) {
+
+            data.forEach(function(d) {
+                d.x = +d.x;
+                d.y = +d.y;
+            })
+
+            var x = d3.scale.ordinal();
+            var y = d3.scale.linear();
+
+            var svg = d3.select("#barchart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // var group = svg.append("g")
+            //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            x.domain(data.map(function(d, i) {
+                return i + 1;
+            })).rangeRoundBands([0, width], .25);
+
+            y.domain([0, d3.max(data, function(d) {
+                return d.x;
+            })]).range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .ticks(15);
+
+            var xAxisG = svg.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0, ' + height + ')')
+                .call(xAxis);
+
+            var yAxisG = svg.append('g')
+                .attr('class', 'y axis')
+                // .attr('transform', 'translate(' + margin.left + ', ' + 0 + ')')
+                .call(yAxis);
+
+            svg.selectAll("rect")
+                .data(data)
+                .enter()
+                .append("rect")
+                .style("fill", function(d) {
+                    return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
+                })
+                .attr("class", "bar")
+                .attr("x", function(d, i) {
+                    return x(i + 1);
+                })
+                .attr("y", function(d) {
+                    return y(d.x);
+                })
+                .attr("width", x.rangeBand())
+                .attr("height", function(d) {
+                    return height - y(d.x);
+                });
+
+            svg.selectAll(".bartext")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", "label")
+                .text(function(d) {
+                    return d.x;
+                })
+                .attr("x", function(d, i) {
+                    return x(i + 1) + x.rangeBand() / 2;
+                })
+                .attr("y", function(d) {
+                    return y(d.x) + 14;
+                })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "12px")
+                .attr("fill", "white")
+                .attr("text-anchor", "middle");
+
+            // Put your part three code here ***********************
+
+            var x = d3.scale.linear();
+            var y = d3.scale.linear();
+
+            var svg = d3.select("#scatterplot")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            x.domain(d3.extent(data, function(d) {
+                return d.x;
+            })).range([0, width]);
+
+            y.domain(d3.extent(data, function(d) {
+                return d.y;
+            })).range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+            var xAxisG = svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+
+            xAxisG.append("text")
+                .attr("class", "label")
+                .attr("x", width)
+                .attr("y", -6)
+                .style("text-anchor", "end")
+                .text("x");
+
+            var yAxisG = svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+
+            yAxisG.append("text")
+                .attr("class", "label")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".5em")
+                .style("text-anchor", "end")
+                .text("y")
+
+            svg.selectAll(".dot")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("class", "dot")
+                .attr("r", function(d) {
+                    return d.x;
+                })
+                .attr("cx", function(d) {
+                    return x(d.x);
+                })
+                .attr("cy", function(d) {
+                    return y(d.y);
+                })
+                .on("click", function(d) {
+                    showCoordinates(d.x, d.y);
+                });
+        })
+
+        // Put your part four code here ***********************
+
+        // Put your part five code here ***********************
+
+        function showCoordinates(x, y) {
+            // document.getElementById('scatterLabel').innerHTML = "X";
+            $('#scatterLabel').html("X: " + x + " Y: " + y)
+        }
+        </script>
+    </body>
+
+</html>
