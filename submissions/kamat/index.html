@@ -59,7 +59,7 @@
 
         // Put your part two code here ***********************
 
-        d3.csv("data/anscombe_II.csv", function(data) {
+        d3.csv("data/anscombe_I.csv", function(data) {
 
             data.forEach(function(d) {
                 d.x = +d.x;
@@ -149,6 +149,8 @@
             var x = d3.scale.linear();
             var y = d3.scale.linear();
 
+            var color = d3.scale.category10();
+
             var svg = d3.select("#scatterplot")
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -156,13 +158,13 @@
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            x.domain(d3.extent(data, function(d) {
+            x.domain([0, d3.max(data, function(d) {
                 return d.x;
-            })).range([0, width]);
+            }) + 1]).range([0, width]);
 
-            y.domain(d3.extent(data, function(d) {
-                return d.y;
-            })).range([height, 0]);
+            y.domain([0, d3.max(data, function(d) {
+                return parseFloat(d.y);
+            }) + 1]).range([height, 0]);
 
             var xAxis = d3.svg.axis()
                 .scale(x)
@@ -170,7 +172,8 @@
 
             var yAxis = d3.svg.axis()
                 .scale(y)
-                .orient("left");
+                .orient("left")
+                .ticks(15);
 
             var xAxisG = svg.append("g")
                 .attr("class", "x axis")
@@ -201,6 +204,7 @@
                 .enter()
                 .append("circle")
                 .attr("class", "dot")
+                .style("fill", function(d) { return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";}) 
                 .attr("r", function(d) {
                     return d.x;
                 })
@@ -212,6 +216,12 @@
                 })
                 .on("click", function(d) {
                     showCoordinates(d.x, d.y);
+                })
+                .on('mouseover', function(d) {
+                    d3.select(this).style("fill", "red")
+                })
+                .on('mouseout', function(d) {
+                    d3.select(this).style("fill", function(d) { return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";})
                 });
         })
 
@@ -221,7 +231,7 @@
 
         function showCoordinates(x, y) {
             // document.getElementById('scatterLabel').innerHTML = "X";
-            $('#scatterLabel').html("X: " + x + " Y: " + y)
+            $('#scatterLabel').html("(x, y) : " + "(" + x + ", " + y + ")")
         }
         </script>
     </body>
