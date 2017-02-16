@@ -2,12 +2,56 @@
 
     <head>
         <title>Project 0</title>
-        <style type="text/css" href="project0.css"></style>
+        <!-- <style type="text/css" href="project0.css"></style> -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <!--Put your D3 import statement between these two lines-->
         <script src="http://d3js.org/d3.v3.min.js"></script>
         <!--Put your D3 import statement between these two lines-->
     </head>
+    <style type="text/css">
+    body {
+        font-family: sans-serif;
+        font-size: 11px;
+    }
+    
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: auto;
+    }
+    
+    .point {
+        fill: #f00;
+        stroke: #000;
+    }
+    
+    .label {
+        text-anchor: middle;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .bar {
+        color: white;
+        background-color: #7BC8FB;
+        padding: 0.5em;
+        position: relative;
+        left: 3em;
+    }
+    
+    .child_div_1 {
+        float: left;
+        margin-right: 20px;
+        margin-bottom: 20px;
+    }
+
+    .child_div_2 {
+        margin-bottom: 20px;
+    }
+
+    </style>
 
     <body>
         <div id="partOne">
@@ -27,19 +71,19 @@
         <div id="partFive">
             <h1>Part Five: </h1>
             <div id="scatterplotSet">
-                <div id="anscombe_1">anscombe_I.csv
+                <div id="anscombe_1" class="child_div_1"><b>anscombe_I.csv</b>
                     <p id="scatterLabel_1"><i>No point selected</i></p>
                 </div>
-                <hr>
-                <div id="anscombe_2">anscombe_II.csv
+                <!-- <hr> -->
+                <div id="anscombe_2" class="child_div_2"><b>anscombe_II.csv</b>
                     <p id="scatterLabel_2"><i>No point selected</i></p>
                 </div>
-                <hr>
-                <div id="anscombe_3">anscombe_III.csv
+                <!-- <hr> -->
+                <div id="anscombe_3" class="child_div_1"><b>anscombe_III.csv</b>
                     <p id="scatterLabel_3"><i>No point selected</i></p>
                 </div>
-                <hr>
-                <div id="anscombe_4">anscombe_IV.csv
+                <!-- <hr> -->
+                <div id="anscombe_4" class="child_div_2"><b>anscombe_IV.csv</b>
                     <p id="scatterLabel_4"><i>No point selected</i></p>
                 </div>
             </div>
@@ -312,9 +356,7 @@
                     .style("fill", function(d) {
                         return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
                     })
-                    .attr("r", function(d) {
-                        return d.x;
-                    })
+                    .attr("r", 3)
                     .attr("cx", function(d) {
                         return x(d.x);
                     })
@@ -332,15 +374,15 @@
                             return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
                         })
                     });
-                })
-            });
+            })
+        });
 
         function showCoordinates(x, y) {
             $('#scatterLabel').html("(x, y) : " + "(" + x + ", " + y + ")")
         }
 
         function showCoordinates_indexed(x, y, i) {
-            $('#scatterLabel_'+ (i+1)).html("(x, y) : " + "(" + x + ", " + y + ")")
+            $('#scatterLabel_' + (i + 1)).html("(x, y) : " + "(" + x + ", " + y + ")")
         }
         </script>
     </body>
