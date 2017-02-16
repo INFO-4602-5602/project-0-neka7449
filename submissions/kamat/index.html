@@ -27,6 +27,21 @@
         <div id="partFive">
             <h1>Part Five: </h1>
             <div id="scatterplotSet">
+                <div id="anscombe_1">anscombe_I.csv
+                    <p id="scatterLabel_1"><i>No point selected</i></p>
+                </div>
+                <hr>
+                <div id="anscombe_2">anscombe_II.csv
+                    <p id="scatterLabel_2"><i>No point selected</i></p>
+                </div>
+                <hr>
+                <div id="anscombe_3">anscombe_III.csv
+                    <p id="scatterLabel_3"><i>No point selected</i></p>
+                </div>
+                <hr>
+                <div id="anscombe_4">anscombe_IV.csv
+                    <p id="scatterLabel_4"><i>No point selected</i></p>
+                </div>
             </div>
         </div>
         <script type="text/javascript">
@@ -60,11 +75,10 @@
         // Put your part two code here ***********************
 
         d3.csv("data/anscombe_I.csv", function(data) {
-
             data.forEach(function(d) {
                 d.x = +d.x;
                 d.y = +d.y;
-            })
+            });
 
             var x = d3.scale.ordinal();
             var y = d3.scale.linear();
@@ -163,7 +177,7 @@
             }) + 1]).range([0, width]);
 
             y.domain([0, d3.max(data, function(d) {
-                return parseFloat(d.y);
+                return d.y;
             }) + 1]).range([height, 0]);
 
             var xAxis = d3.svg.axis()
@@ -178,7 +192,7 @@
             var xAxisG = svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
-                .call(xAxis)
+                .call(xAxis);
 
             xAxisG.append("text")
                 .attr("class", "label")
@@ -189,7 +203,7 @@
 
             var yAxisG = svg.append("g")
                 .attr("class", "y axis")
-                .call(yAxis)
+                .call(yAxis);
 
             yAxisG.append("text")
                 .attr("class", "label")
@@ -197,16 +211,16 @@
                 .attr("y", 6)
                 .attr("dy", ".5em")
                 .style("text-anchor", "end")
-                .text("y")
+                .text("y");
 
             svg.selectAll(".dot")
                 .data(data)
                 .enter()
                 .append("circle")
                 .attr("class", "dot")
-                .style("fill", function(d) { 
+                .style("fill", function(d) {
                     return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
-                }) 
+                })
                 .attr("r", function(d) {
                     return d.x;
                 })
@@ -223,18 +237,110 @@
                     d3.select(this).style("fill", "red")
                 })
                 .on('mouseout', function(d) {
-                    d3.select(this).style("fill", function(d) { 
+                    d3.select(this).style("fill", function(d) {
                         return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
-                    })
+                    });
                 });
-        })
-
-        // Put your part four code here ***********************
+        });
 
         // Put your part five code here ***********************
 
+        filesList.forEach(function(f, i) {
+            d3.csv(f, function(data) {
+                var x = d3.scale.linear();
+                var y = d3.scale.linear();
+
+                var color = d3.scale.category10();
+
+                var svg = d3.select("#anscombe_" + (i + 1))
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                console.log(d3.max(data, function(d) {
+                    return +d.x;
+                }));
+
+                x.domain([0, d3.max(data, function(d) {
+                    return +d.x;
+                }) + 1]).range([0, width]);
+
+                y.domain([0, d3.max(data, function(d) {
+                    return +d.y;
+                }) + 1]).range([height, 0]);
+
+                var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .orient("bottom");
+
+                var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .orient("left")
+                    .ticks(15);
+
+                var xAxisG = svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis)
+
+                xAxisG.append("text")
+                    .attr("class", "label")
+                    .attr("x", width)
+                    .attr("y", -6)
+                    .style("text-anchor", "end")
+                    .text("x");
+
+                var yAxisG = svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis)
+
+                yAxisG.append("text")
+                    .attr("class", "label")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 6)
+                    .attr("dy", ".5em")
+                    .style("text-anchor", "end")
+                    .text("y")
+
+                svg.selectAll(".dot")
+                    .data(data)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "dot")
+                    .style("fill", function(d) {
+                        return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
+                    })
+                    .attr("r", function(d) {
+                        return d.x;
+                    })
+                    .attr("cx", function(d) {
+                        return x(d.x);
+                    })
+                    .attr("cy", function(d) {
+                        return y(d.y);
+                    })
+                    .on("click", function(d) {
+                        showCoordinates_indexed(d.x, d.y, i);
+                    })
+                    .on('mouseover', function(d) {
+                        d3.select(this).style("fill", "red")
+                    })
+                    .on('mouseout', function(d) {
+                        d3.select(this).style("fill", function(d) {
+                            return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
+                        })
+                    });
+                })
+            });
+
         function showCoordinates(x, y) {
             $('#scatterLabel').html("(x, y) : " + "(" + x + ", " + y + ")")
+        }
+
+        function showCoordinates_indexed(x, y, i) {
+            $('#scatterLabel_'+ (i+1)).html("(x, y) : " + "(" + x + ", " + y + ")")
         }
         </script>
     </body>
