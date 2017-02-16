@@ -22,10 +22,20 @@ body {
     cursor: pointer;
 }
 
-.bar { 
+.bar {
     color: white;
     background-color: #7BC8FB;
     padding: 0.5em;
     position: relative;
-    left: 3em; 
+    left: 3em;
+}
+
+.child_div_1 {
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.child_div_2 {
+    margin-bottom: 20px;
 }
