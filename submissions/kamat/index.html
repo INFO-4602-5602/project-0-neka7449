@@ -323,12 +323,12 @@
                         showCoordinates_indexed(d.x, d.y, i);
                     })
                     .on('mouseover', function(d) {
-                        d3.select(this).style("fill", "red")
+                        d3.select(this).style("fill", "red").attr("r", 6)
                     })
                     .on('mouseout', function(d) {
                         d3.select(this).style("fill", function(d) {
                             return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
-                        })
+                        }).attr("r", 3)
                     });
             })
         });
