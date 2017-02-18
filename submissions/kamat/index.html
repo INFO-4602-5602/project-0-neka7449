@@ -118,6 +118,14 @@
                 .attr('class', 'y axis')
                 .call(yAxis);
 
+            yAxisG.append("text")
+                .attr("class", "label")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".5em")
+                .style("text-anchor", "end")
+                .text("x");
+
             // drawing the rectangles on the barchart
             svg.selectAll("rect")
                 .data(data)
