@@ -1,3 +1,5 @@
+Completed Tasks 1 - 5
+
 Bell(s) completed:
 - Tooltips: Hovering the mouse over the circles displays the x and y values of the circles in a tooltip
 
