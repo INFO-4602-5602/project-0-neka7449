@@ -245,11 +245,13 @@
                 // Bell: Tooltips
                 .on("mouseover", function(d) {
                     d3.select(this).style("fill", "red");
-                    return tooltip.style("visibility", "visible").text(d.x + ", " + d.y).style("font-family", "sans-serif");
+                    return tooltip.style("visibility", "visible").text(d.x + ", " + d.y)
+                        .style("font-family", "sans-serif");
 
                 })
                 .on("mousemove", function() {
-                    return tooltip.style("top", (d3.event.pageY - 12) + "px").style("left", (d3.event.pageX + 12) + "px");
+                    return tooltip.style("top", (d3.event.pageY - 12) + "px")
+                        .style("left", (d3.event.pageX + 12) + "px");
                 })
                 .on("mouseout", function(d) {
                     d3.select(this).style("fill", function(d) {
@@ -343,11 +345,13 @@
                     })
                     .on("mouseover", function(d) {
                         d3.select(this).style("fill", "red").attr("r", 6);
-                        return tooltip.style("visibility", "visible").text(d.x + ", " + d.y).style("font-family", "sans-serif");
+                        return tooltip.style("visibility", "visible")
+                            .text(d.x + ", " + d.y).style("font-family", "sans-serif");
 
                     })
                     .on("mousemove", function() {
-                        return tooltip.style("top", (d3.event.pageY - 12) + "px").style("left", (d3.event.pageX + 12) + "px");
+                        return tooltip.style("top", (d3.event.pageY - 12) + "px")
+                            .style("left", (d3.event.pageX + 12) + "px");
                     })
                     .on("mouseout", function(d) {
                         d3.select(this).style("fill", function(d) {
@@ -357,7 +361,7 @@
                     });
             });
         });
-        
+
 
         function showCoordinates(x, y) {
             $('#scatterLabel').html("(x, y) : " + "(" + x + ", " + y + ")")
