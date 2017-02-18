@@ -261,7 +261,6 @@
                     d3.select(this).style("fill", "red");
                     return tooltip.style("visibility", "visible").text(d.x + ", " + d.y)
                         .style("font-family", "sans-serif");
-
                 })
                 .on("mousemove", function() {
                     return tooltip.style("top", (d3.event.pageY - 12) + "px")
@@ -277,7 +276,7 @@
 
 
         // Put your part five code here ***********************
-        // Doing the same thing as part four, just for all the datasets
+        // Doing the same thing as part three, just for all the datasets
         filesList.forEach(function(f, i) {
             d3.csv(f, function(data) {
                 var x = d3.scale.linear();
