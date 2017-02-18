@@ -45,6 +45,7 @@
         // Put your part one code here ***********************
         var filesList = ["./data/anscombe_I.csv", "./data/anscombe_II.csv", "./data/anscombe_III.csv", "./data/anscombe_IV.csv"];
 
+        // iterating through each csv file and checking data
         filesList.forEach(function(f) {
             d3.csv(f, function(data) {
                 checkDataset(data);
@@ -59,6 +60,7 @@
                 $("#partOne").append("<p>data loaded incorrectly. Try using the debugger to help you find the bug!</p>");
         }
 
+        // Setting margins and dimensions for all SVGs to be drawn
         var margin = {
             top: 20,
             right: 20,
@@ -69,15 +71,15 @@
         var width = 600;
         var height = 300;
 
+        // var c20 = d3.scale.category20();
+
         // Put your part two code here ***********************
         d3.csv("data/anscombe_I.csv", function(data) {
+            // converting data to number values (for good axes)
             data.forEach(function(d) {
                 d.x = +d.x;
                 d.y = +d.y;
             });
-
-            var x = d3.scale.ordinal();
-            var y = d3.scale.linear();
 
             var svg = d3.select("#barchart")
                 .append("svg")
@@ -85,6 +87,10 @@
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // setting up scales, domains, ranges and axes
+            var x = d3.scale.ordinal();
+            var y = d3.scale.linear();
 
             x.domain(data.map(function(d, i) {
                 return i + 1;
@@ -112,10 +118,12 @@
                 .attr('class', 'y axis')
                 .call(yAxis);
 
+            // drawing the rectangles on the barchart
             svg.selectAll("rect")
                 .data(data)
                 .enter()
                 .append("rect")
+                // .style("fill", c20)
                 .style("fill", function(d) {
                     return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
                 })
@@ -130,6 +138,7 @@
                 .attr("height", function(d) {
                     return height - y(d.x);
                 })
+                // adding interactivity to the bars
                 .on("mouseover", function() {
                     d3.select(this).style("fill", "red")
                 })
@@ -139,6 +148,7 @@
                     })
                 });
 
+            // displaying the value of the bar at its top edge
             svg.selectAll(".bartext")
                 .data(data)
                 .enter()
@@ -160,11 +170,6 @@
 
 
             // Put your part three code here ***********************
-            var x = d3.scale.linear();
-            var y = d3.scale.linear();
-
-            var color = d3.scale.category10();
-
             var svg = d3.select("#scatterplot")
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -172,12 +177,17 @@
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            // Writing tooltip definition to complete a "bell" task
             var tooltip = d3.select("#scatterplot")
                 .append("div")
                 .style("position", "absolute")
                 .style("z-index", "10")
                 .style("visibility", "hidden")
                 .text("tooltip");
+
+            // Resetting scales, domains, ranges and axes for scatterplot
+            var x = d3.scale.linear();
+            var y = d3.scale.linear();
 
             x.domain([0, d3.max(data, function(d) {
                 return d.x;
@@ -220,14 +230,17 @@
                 .style("text-anchor", "end")
                 .text("y");
 
+            // Actually plotting the data points on the scatterplot
             svg.selectAll(".dot")
                 .data(data)
                 .enter()
                 .append("circle")
                 .attr("class", "dot")
+                // .style("fill", c20)
                 .style("fill", function(d) {
                     return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
                 })
+                // Making the radius of the dots a function of their x values
                 .attr("r", function(d) {
                     return d.x;
                 })
@@ -238,8 +251,9 @@
                     return y(d.y);
                 })
 
-            // part four code here ***********************
-            .on("click", function(d) {
+                // part four code here ***********************
+                // adding interactivity to the dots
+                .on("click", function(d) {
                     showCoordinates(d.x, d.y);
                 })
                 // Bell: Tooltips
@@ -256,19 +270,20 @@
                 .on("mouseout", function(d) {
                     d3.select(this).style("fill", function(d) {
                         return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
-                    });
+                    })
                     return tooltip.style("visibility", "hidden");
                 });
         });
 
 
         // Put your part five code here ***********************
+        // Doing the same thing as part four, just for all the datasets
         filesList.forEach(function(f, i) {
             d3.csv(f, function(data) {
                 var x = d3.scale.linear();
                 var y = d3.scale.linear();
 
-                var color = d3.scale.category10();
+                // var color = d3.scale.category10();
 
                 var svg = d3.select("#anscombe_" + (i + 1))
                     .append("svg")
