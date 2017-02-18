@@ -347,7 +347,6 @@
                         d3.select(this).style("fill", "red").attr("r", 6);
                         return tooltip.style("visibility", "visible")
                             .text(d.x + ", " + d.y).style("font-family", "sans-serif");
-
                     })
                     .on("mousemove", function() {
                         return tooltip.style("top", (d3.event.pageY - 12) + "px")
