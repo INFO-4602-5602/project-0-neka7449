@@ -15,7 +15,9 @@
         </div>
         <div id="partTwo">
             <h1>Part Two: </h1>
-            <div id="barchart">
+            <div id="barchartx">
+            </div>
+            <div id="barcharty">
             </div>
         </div>
         <div id="partThree">
@@ -81,7 +83,7 @@
                 d.y = +d.y;
             });
 
-            var svg = d3.select("#barchart")
+            var svg = d3.select("#barchartx")
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
@@ -176,6 +178,102 @@
                 .attr("fill", "white")
                 .attr("text-anchor", "middle");
 
+            // For bell Xs and Ys
+            var svg = d3.select("#barcharty")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // setting up scales, domains, ranges and axes
+            var x = d3.scale.ordinal();
+            var y = d3.scale.linear();
+
+            x.domain(data.map(function(d, i) {
+                return i + 1;
+            })).rangeRoundBands([0, width], .25);
+
+            y.domain([0, d3.max(data, function(d) {
+                return d.x;
+            })]).range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .ticks(15);
+
+            var xAxisG = svg.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0, ' + height + ')')
+                .call(xAxis);
+
+            var yAxisG = svg.append('g')
+                .attr('class', 'y axis')
+                .call(yAxis);
+
+            yAxisG.append("text")
+                .attr("class", "label")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".5em")
+                .style("text-anchor", "end")
+                .text("y");
+
+            // drawing the rectangles on the barchart
+            svg.selectAll("rect")
+                .data(data)
+                .enter()
+                .append("rect")
+                // .style("fill", c20)
+                .style("fill", function(d) {
+                    return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
+                })
+                .attr("class", "bar")
+                .attr("x", function(d, i) {
+                    return x(i + 1);
+                })
+                .attr("y", function(d) {
+                    return y(d.y);
+                })
+                .attr("width", x.rangeBand())
+                .attr("height", function(d) {
+                    return height - y(d.y);
+                })
+                // adding interactivity to the bars
+                .on("mouseover", function() {
+                    d3.select(this).style("fill", "red")
+                })
+                .on("mouseout", function(d) {
+                    d3.select(this).style("fill", function(d) {
+                        return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
+                    })
+                });
+
+            // displaying the value of the bar at its top edge
+            svg.selectAll(".bartext")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", "label")
+                .text(function(d) {
+                    return d.x;
+                })
+                .attr("x", function(d, i) {
+                    return x(i + 1) + x.rangeBand() / 2;
+                })
+                .attr("y", function(d) {
+                    return y(d.y) + 14;
+                })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "12px")
+                .attr("fill", "white")
+                .attr("text-anchor", "middle");
+
 
             // Put your part three code here ***********************
             var svg = d3.select("#scatterplot")
@@ -197,14 +295,6 @@
             var x = d3.scale.linear();
             var y = d3.scale.linear();
 
-            x.domain([0, d3.max(data, function(d) {
-                return d.x;
-            }) + 1]).range([0, width]);
-
-            y.domain([0, d3.max(data, function(d) {
-                return d.y;
-            }) + 1]).range([height, 0]);
-
             var xAxis = d3.svg.axis()
                 .scale(x)
                 .orient("bottom");
@@ -213,6 +303,30 @@
                 .scale(y)
                 .orient("left")
                 .ticks(15);
+
+            // lines 210 - 223 used to define line path
+            var lineData = create_data(data);
+            lineData.forEach(function(d) {
+                d.x = +d.x;
+                d.y = +d.y;
+                d.yhat = +d.yhat;
+            });
+
+            var line = d3.svg.line()
+                .x(function(d) {
+                    return x(+d.x);
+                })
+                .y(function(d) {
+                    return y(+d.yhat);
+                });
+
+            x.domain([0, d3.max(data, function(d) {
+                return d.x;
+            }) + 1]).range([0, width]);
+
+            y.domain([0, d3.max(data, function(d) {
+                return d.y;
+            }) + 1]).range([height, 0]);
 
             var xAxisG = svg.append("g")
                 .attr("class", "x axis")
@@ -259,9 +373,9 @@
                     return y(d.y);
                 })
 
-                // part four code here ***********************
-                // adding interactivity to the dots
-                .on("click", function(d) {
+            // part four code here ***********************
+            // adding interactivity to the dots
+            .on("click", function(d) {
                     showCoordinates(d.x, d.y);
                 })
                 // Bell: Tooltips
@@ -280,6 +394,12 @@
                     })
                     return tooltip.style("visibility", "hidden");
                 });
+
+            svg.append("path")
+                // .datum(lineData)
+                .attr("class", "line")
+                .attr("d", line(lineData))
+                .style("z-index", "10");
         });
 
 
@@ -390,6 +510,54 @@
 
         function showCoordinates_indexed(x, y, i) {
             $('#scatterLabel_' + (i + 1)).html("(x, y) : " + "(" + x + ", " + y + ")")
+        }
+
+        // code for this function taken from https://bl.ocks.org/ctufts/298bfe4b11989960eeeecc9394e9f118
+        function create_data(data) {
+            var len = data.length;
+            var x_mean = y_mean = coeff1 = coeff2 = 0;
+
+
+            for (var i = 0; i < len; i++) {
+                x_mean += data[i].x
+                y_mean += data[i].y
+            }
+
+            // calculate mean x and y
+            x_mean /= len;
+            y_mean /= len;
+
+            // calculate coefficients
+            var xr = yr = 0;
+
+            for (i = 0; i < len; i++) {
+                xr = data[i].x - x_mean;
+                yr = data[i].y - y_mean;
+                coeff1 += xr * yr;
+                coeff2 += xr * xr;
+            }
+
+            var b1 = coeff1 / coeff2;
+            var b0 = y_mean - (b1 * x_mean);
+
+            // perform regression
+            yhat = [];
+
+            // fit line using coeffs
+            for (i = 0; i < len; i++) {
+                yhat.push(b0 + (data[i].x * b1));
+            }
+
+            var returnData = [];
+            for (i = 0; i < len; i++) {
+                returnData.push({
+                    "yhat": yhat[i],
+                    "y": data[i].y,
+                    "x": data[i].x
+                })
+            }
+            // console.log(returnData);
+            return (returnData);
         }
         </script>
     </body>

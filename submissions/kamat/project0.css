@@ -39,3 +39,13 @@ body {
 .child_div_2 {
     margin-bottom: 20px;
 }
+
+#barchartx {
+    float: left;
+}
+
+.line {
+    stroke: #E4002B;
+    fill: none;
+    stroke-width: 3;
+}
