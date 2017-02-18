@@ -261,7 +261,7 @@
                 .append("text")
                 .attr("class", "label")
                 .text(function(d) {
-                    return d.x;
+                    return d.y;
                 })
                 .attr("x", function(d, i) {
                     return x(i + 1) + x.rangeBand() / 2;
