@@ -30,15 +30,12 @@
                 <div id="anscombe_1" class="child_div_1"><b>anscombe_I.csv</b>
                     <p id="scatterLabel_1"><i>No point selected</i></p>
                 </div>
-                <!-- <hr> -->
                 <div id="anscombe_2" class="child_div_2"><b>anscombe_II.csv</b>
                     <p id="scatterLabel_2"><i>No point selected</i></p>
                 </div>
-                <!-- <hr> -->
                 <div id="anscombe_3" class="child_div_1"><b>anscombe_III.csv</b>
                     <p id="scatterLabel_3"><i>No point selected</i></p>
                 </div>
-                <!-- <hr> -->
                 <div id="anscombe_4" class="child_div_2"><b>anscombe_IV.csv</b>
                     <p id="scatterLabel_4"><i>No point selected</i></p>
                 </div>
@@ -73,7 +70,6 @@
         var height = 300;
 
         // Put your part two code here ***********************
-
         d3.csv("data/anscombe_I.csv", function(data) {
             data.forEach(function(d) {
                 d.x = +d.x;
@@ -89,9 +85,6 @@
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            // var group = svg.append("g")
-            //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             x.domain(data.map(function(d, i) {
                 return i + 1;
@@ -117,7 +110,6 @@
 
             var yAxisG = svg.append('g')
                 .attr('class', 'y axis')
-                // .attr('transform', 'translate(' + margin.left + ', ' + 0 + ')')
                 .call(yAxis);
 
             svg.selectAll("rect")
@@ -137,6 +129,14 @@
                 .attr("width", x.rangeBand())
                 .attr("height", function(d) {
                     return height - y(d.x);
+                })
+                .on("mouseover", function() {
+                    d3.select(this).style("fill", "red")
+                })
+                .on("mouseout", function(d) {
+                    d3.select(this).style("fill", function(d) {
+                        return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
+                    })
                 });
 
             svg.selectAll(".bartext")
@@ -158,8 +158,8 @@
                 .attr("fill", "white")
                 .attr("text-anchor", "middle");
 
-            // Put your part three code here ***********************
 
+            // Put your part three code here ***********************
             var x = d3.scale.linear();
             var y = d3.scale.linear();
 
@@ -171,6 +171,13 @@
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var tooltip = d3.select("#scatterplot")
+                .append("div")
+                .style("position", "absolute")
+                .style("z-index", "10")
+                .style("visibility", "hidden")
+                .text("tooltip");
 
             x.domain([0, d3.max(data, function(d) {
                 return d.x;
@@ -230,21 +237,30 @@
                 .attr("cy", function(d) {
                     return y(d.y);
                 })
-                .on("click", function(d) {
+
+            // part four code here ***********************
+            .on("click", function(d) {
                     showCoordinates(d.x, d.y);
                 })
-                .on('mouseover', function(d) {
-                    d3.select(this).style("fill", "red")
+                // Bell: Tooltips
+                .on("mouseover", function(d) {
+                    d3.select(this).style("fill", "red");
+                    return tooltip.style("visibility", "visible").text(d.x + ", " + d.y).style("font-family", "sans-serif");
+
                 })
-                .on('mouseout', function(d) {
+                .on("mousemove", function() {
+                    return tooltip.style("top", (d3.event.pageY - 12) + "px").style("left", (d3.event.pageX + 12) + "px");
+                })
+                .on("mouseout", function(d) {
                     d3.select(this).style("fill", function(d) {
                         return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
                     });
+                    return tooltip.style("visibility", "hidden");
                 });
         });
 
-        // Put your part five code here ***********************
 
+        // Put your part five code here ***********************
         filesList.forEach(function(f, i) {
             d3.csv(f, function(data) {
                 var x = d3.scale.linear();
@@ -259,9 +275,12 @@
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                console.log(d3.max(data, function(d) {
-                    return +d.x;
-                }));
+                var tooltip = d3.select("#anscombe_" + (i + 1))
+                    .append("div")
+                    .style("position", "absolute")
+                    .style("z-index", "10")
+                    .style("visibility", "hidden")
+                    .text("tooltip");
 
                 x.domain([0, d3.max(data, function(d) {
                     return +d.x;
@@ -322,16 +341,23 @@
                     .on("click", function(d) {
                         showCoordinates_indexed(d.x, d.y, i);
                     })
-                    .on('mouseover', function(d) {
-                        d3.select(this).style("fill", "red").attr("r", 6)
+                    .on("mouseover", function(d) {
+                        d3.select(this).style("fill", "red").attr("r", 6);
+                        return tooltip.style("visibility", "visible").text(d.x + ", " + d.y).style("font-family", "sans-serif");
+
                     })
-                    .on('mouseout', function(d) {
+                    .on("mousemove", function() {
+                        return tooltip.style("top", (d3.event.pageY - 12) + "px").style("left", (d3.event.pageX + 12) + "px");
+                    })
+                    .on("mouseout", function(d) {
                         d3.select(this).style("fill", function(d) {
                             return "rgb(" + 0 + ", " + (d.x * 10) + ", " + (d.x * 10) + ")";
-                        }).attr("r", 3)
+                        }).attr("r", 3);
+                        return tooltip.style("visibility", "hidden");
                     });
-            })
+            });
         });
+        
 
         function showCoordinates(x, y) {
             $('#scatterLabel').html("(x, y) : " + "(" + x + ", " + y + ")")
